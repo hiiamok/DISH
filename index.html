@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>DISH by hiiamok</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>DISH</h1>
+        <h2>Distributed Image Search with Hadoop</h2>
+        <a href="https://github.com/hiiamok/DISH" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="1-intro" class="anchor" href="#1-intro" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Intro</h1>
+
+<p>DISH consists of 2 different parts</p>
+
+<h2>
+<a id="a-imagefeaturesgenerator" class="anchor" href="#a-imagefeaturesgenerator" aria-hidden="true"><span class="octicon octicon-link"></span></a>a) ImageFeaturesGenerator</h2>
+
+<p>Generates a file including a list of all images and their imagefeatures (histogram)</p>
+
+<h2>
+<a id="b-imagesearcher" class="anchor" href="#b-imagesearcher" aria-hidden="true"><span class="octicon octicon-link"></span></a>b) ImageSearcher</h2>
+
+<p>Takes a local file, generates imagefeatures and compares them to all other images stored in the ImageFeaturesGenerator generated file</p>
+
+<p>DISH was developed and tested on Mac OS X Yosemite running Java SDK 8.
+The GUI might look different of other platforms.</p>
+
+<h1>
+<a id="2-usage" class="anchor" href="#2-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Usage</h1>
+
+<h2>
+<a id="a-imagefeaturesgenerator-1" class="anchor" href="#a-imagefeaturesgenerator-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>a) ImageFeaturesGenerator</h2>
+
+<pre><code>    hadoop jar ImageFeaturesGenerator.jar [options]
+
+    options:
+        -i, --images &lt;path&gt;         path hdfs image directory (default: /images)
+        -if, --imagefeatures &lt;path&gt; path to hdfs imagefeatures result (default: /imageFeatures)
+        -mb, --maxbytes             max memory size of one split (default: 1GB)
+        -t, --time                  measure execution time
+        --help                      print usage information
+</code></pre>
+
+<h2>
+<a id="b-imagesearcher-1" class="anchor" href="#b-imagesearcher-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>b) ImageSearcher</h2>
+
+<pre><code>    hadoop jar ImageSearcher.jar [options]
+
+    options:
+        -s, --search &lt;path&gt;         path to local query image
+        -i, --images &lt;path&gt;         path hdfs image directory (default: /images)
+        -if, --imagefeatures &lt;path&gt; path to hdfs imagefeatures (default: /imageFeatures)
+        -r, --results n             number of results (default: 1)
+        -o, --output &lt;path&gt;         path to output (default: /DISH)
+        -l, --lines                 max number of lines each mapper reads (default: 10000)
+        -t, --time                  measure execution time
+        --help                      print usage information
+        --cli                       use commandline output instead of GUI
+</code></pre>
+
+<p>Note:   By default the ImageSearcher is trying to open a GUI.
+If you are on a server or want to run it on the command line please use the parameter --cli</p>
+
+<h1>
+<a id="3-description" class="anchor" href="#3-description" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Description</h1>
+
+<h2>
+<a id="a-imagefeaturesgenerator-2" class="anchor" href="#a-imagefeaturesgenerator-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>a) ImageFeaturesGenerator</h2>
+
+<p>The ImageFeaturesGenerator takes an input directory of imagefiles, and generates an indexfile of all existing images.</p>
+
+<p>The generated file has the following format: filepath;imagefeatures;
+where imagefeatures is a String representation of an image histogram.</p>
+
+<p>The ImageFeaturesGenerator is implemented as a MapReduce algorithm without Reducer.
+For reading the image files saved on hdfs, a BinaryFileRecordReader was implemented.
+To Combine several BinaryFiles a BinaryFileInputFormat was defined.</p>
+
+<p>Info: The output of the ImageFeaturesGenerator will NOT be exactly one file.
+Since it was written for distributed usage, each mapper will generate one result-file in the defined output directory.
+This is also useful for the ImageSearcher, because the ImageSearcher can split it's task more easily.
+Still the ImageSearcher was designed in a way, that also 1 single input file would result in several mappers.
+Therefore it is possible to change the number of lines 1 mapper process reads.</p>
+
+<p>(see SmallFileProblem for further information)</p>
+
+<h2>
+<a id="b-imagesearcher-2" class="anchor" href="#b-imagesearcher-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>b) ImageSearcher</h2>
+
+<p>The ImageSearcher is implemented as a MapReduce algorithm with exactly one Reducer.</p>
+
+<p>The input for the mapper is the the generated result of the ImageFeaturesGenerator.
+To achieve a better performance of the mapper, not only one line is passed to one mappertask.
+Each mapper receives several lines at once, and calculates the euclidian distance for all of them.
+The top n results are passed on to the reducer.</p>
+
+<p>For passing results from the mappers to the reducer a Writable ImageDistanceMap was implemented.</p>
+
+<p>It is only 1 reducer called! The reducer receives all top-lists of the mappers.
+It then sorts this list, and gets the top n matching items, and writes them into an output file.</p>
+
+<p>In CLI mode the output file is read and printed.
+If the GUI is started, the result file is read, and all result-images are loaded from hdfs displayed.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/hiiamok/DISH/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/hiiamok/DISH/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/hiiamok/DISH"></a> is maintained by <a href="https://github.com/hiiamok">hiiamok</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
