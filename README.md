@@ -8,9 +8,11 @@ Distributed Image Search with Hadoop
 DISH consists of 2 different parts
 
 === a) ImageFeaturesGenerator
+
 		Generates a file including a list of all images and their imagefeatures (histogram)
 	
 === b) ImageSearcher
+
 		Takes a local file, generates imagefeatures and compares them to all other images stored in the
 		ImageFeaturesGenerator generated file
 
