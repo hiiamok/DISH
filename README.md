@@ -1,6 +1,8 @@
 # DISH
 Distributed Image Search with Hadoop
 
+http://hiiamok.github.io/DISH/
+
 # 1. Intro
 
 DISH consists of 2 different parts
