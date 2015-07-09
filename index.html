@@ -1,34 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <meta charset="UTF-8">
+    <title>DISH by hiiamok</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <title>DISH by hiiamok</title>
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>DISH</h1>
-        <h2>Distributed Image Search with Hadoop</h2>
-        <a href="https://github.com/hiiamok/DISH" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">DISH</h1>
+      <h2 class="project-tagline">Distributed Image Search with Hadoop</h2>
+      <a href="https://github.com/hiiamok/DISH" class="btn">View on GitHub</a>
+      <a href="https://github.com/hiiamok/DISH/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/hiiamok/DISH/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+    <section class="main-content">
+      <h1>
 <a id="1-intro" class="anchor" href="#1-intro" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Intro</h1>
 
 <p>DISH consists of 2 different parts</p>
@@ -52,31 +43,31 @@ The GUI might look different of other platforms.</p>
 <h2>
 <a id="a-imagefeaturesgenerator-1" class="anchor" href="#a-imagefeaturesgenerator-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>a) ImageFeaturesGenerator</h2>
 
-<pre><code>    hadoop jar ImageFeaturesGenerator.jar [options]
+<pre><code>hadoop jar ImageFeaturesGenerator.jar [options]
 
-    options:
-        -i, --images &lt;path&gt;         path hdfs image directory (default: /images)
-        -if, --imagefeatures &lt;path&gt; path to hdfs imagefeatures result (default: /imageFeatures)
-        -mb, --maxbytes             max memory size of one split (default: 1GB)
-        -t, --time                  measure execution time
-        --help                      print usage information
+options:
+    -i, --images &lt;path&gt;         path hdfs image directory (default: /images)
+    -if, --imagefeatures &lt;path&gt; path to hdfs imagefeatures result (default: /imageFeatures)
+    -mb, --maxbytes             max memory size of one split (default: 1GB)
+    -t, --time                  measure execution time
+    --help                      print usage information
 </code></pre>
 
 <h2>
 <a id="b-imagesearcher-1" class="anchor" href="#b-imagesearcher-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>b) ImageSearcher</h2>
 
-<pre><code>    hadoop jar ImageSearcher.jar [options]
+<pre><code>hadoop jar ImageSearcher.jar [options]
 
-    options:
-        -s, --search &lt;path&gt;         path to local query image
-        -i, --images &lt;path&gt;         path hdfs image directory (default: /images)
-        -if, --imagefeatures &lt;path&gt; path to hdfs imagefeatures (default: /imageFeatures)
-        -r, --results n             number of results (default: 1)
-        -o, --output &lt;path&gt;         path to output (default: /DISH)
-        -l, --lines                 max number of lines each mapper reads (default: 10000)
-        -t, --time                  measure execution time
-        --help                      print usage information
-        --cli                       use commandline output instead of GUI
+options:
+    -s, --search &lt;path&gt;         path to local query image
+    -i, --images &lt;path&gt;         path hdfs image directory (default: /images)
+    -if, --imagefeatures &lt;path&gt; path to hdfs imagefeatures (default: /imageFeatures)
+    -r, --results n             number of results (default: 1)
+    -o, --output &lt;path&gt;         path to output (default: /DISH)
+    -l, --lines                 max number of lines each mapper reads (default: 10000)
+    -t, --time                  measure execution time
+    --help                      print usage information
+    --cli                       use commandline output instead of GUI
 </code></pre>
 
 <p>Note:   By default the ImageSearcher is trying to open a GUI.
@@ -122,25 +113,16 @@ It then sorts this list, and gets the top n matching items, and writes them into
 
 <p>In CLI mode the output file is read and printed.
 If the GUI is started, the result file is read, and all result-images are loaded from hdfs displayed.</p>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/hiiamok/DISH/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/hiiamok/DISH/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/hiiamok/DISH">DISH</a> is maintained by <a href="https://github.com/hiiamok">hiiamok</a>.</span>
 
-          <p class="repo-owner"><a href="https://github.com/hiiamok/DISH"></a> is maintained by <a href="https://github.com/hiiamok">hiiamok</a>.</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
   
   </body>
 </html>
+
